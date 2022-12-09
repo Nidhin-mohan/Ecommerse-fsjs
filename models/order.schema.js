@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import OrderStatus from "../utils/orderStatus";
 
 const orderSchema = new mongoose.Schema(
   {
@@ -37,9 +38,9 @@ const orderSchema = new mongoose.Schema(
     transactionId: String,
     status: {
       type: String,
-      enum: ["ORDERED", "SHIPPED", "DELIVERED", "CANCELLED"],
+      enum: Object.values(OrderStatus),
       default: "ORDERED",
-      // can we improve this ?
+      
     },
     //paymentMode: UPI, creditcard or wallet, COD can be added
   },
