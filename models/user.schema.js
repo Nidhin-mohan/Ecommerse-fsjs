@@ -69,6 +69,24 @@ userSchema.methods = {
         expiresIn: config.JWT_EXPIRY
       }
     )
+  },
+
+  genereteForgotPasswordToken: function()
+  {
+    const forgotToken = crypto.randomBytes(20).toString('hex');
+
+
+    //step 1 -save to DB
+
+    this.forgotPasswordToken = crypto.createHash("sha256").update(forgotToken).digest("hex")
+
+    this.forgotPasswordExpiry = Date.now() + 20 + 60 + 1000
+
+    //step 2 return value to user
+
+    return forgotToken
+
+    
   }
 }
 
