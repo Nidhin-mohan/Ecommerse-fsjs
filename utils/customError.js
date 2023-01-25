@@ -5,4 +5,4 @@ class CustomError extends Error {
   }
 }
 
-export default CustomError;
+module.exports = CustomError;

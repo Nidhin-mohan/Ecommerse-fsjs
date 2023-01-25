@@ -1,10 +1,9 @@
-import mongoose from "mongoose";
-import AuthRoles from "../utils/authRoles";
-import bcrypt from "bcryptjs"
-import JWT from "jsonwebtoken";
-import crypto from "crypto";
-import config  from "process";
-
+const mongoose = require("mongoose");
+const AuthRoles = require("../utils/authRoles");
+const bcrypt = require("bcryptjs");
+const JWT = require("jsonwebtoken");
+const crypto = require("crypto");
+const config = require("../config");
 
 const userSchema = mongoose.Schema(
   {
@@ -36,59 +35,54 @@ const userSchema = mongoose.Schema(
   }
 );
 
-
-
 //encrypting password - pre hook
 
-userSchema.pre("save", async function(next){
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
   next();
-  this.password = await bcrypt.hash(this.password,10);
-  next();
-})
-
-
+});
 
 //adding more features directly to your schema
 
 userSchema.methods = {
-  //compare password 
-  comparePassword: async function(enteredPassword){
-    return await bcrypt.compare(enteredPassword,this.password)
+  //compare password
+  comparePassword: async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
   },
 
-  //generate JWT TOKEN  
+  //generate JWT TOKEN
 
-  getJwtToken: function(){
+  getJwtToken: function () {
+    console.log(config.JWT_SECRET);
     return JWT.sign(
       {
         _id: this._id,
-        role: this.role
+        role: this.role,
       },
       config.JWT_SECRET,
       {
-        expiresIn: config.JWT_EXPIRY
+        expiresIn: config.JWT_EXPIRY,
       }
-    )
+    );
   },
 
-  genereteForgotPasswordToken: function()
-  {
-    const forgotToken = crypto.randomBytes(20).toString('hex');
-
+  genereteForgotPasswordToken: function () {
+    const forgotToken = crypto.randomBytes(20).toString("hex");
 
     //step 1 -save to DB
 
-    this.forgotPasswordToken = crypto.createHash("sha256").update(forgotToken).digest("hex")
+    this.forgotPasswordToken = crypto
+      .createHash("sha256")
+      .update(forgotToken)
+      .digest("hex");
 
-    this.forgotPasswordExpiry = Date.now() + 20 + 60 + 1000
+    this.forgotPasswordExpiry = Date.now() + 20 + 60 + 1000;
 
     //step 2 return value to user
 
-    return forgotToken
+    return forgotToken;
+  },
+};
 
-    
-  }
-}
-
-
-export default mongoose.model("User",userSchema);
+module.exports = mongoose.model("User", userSchema);

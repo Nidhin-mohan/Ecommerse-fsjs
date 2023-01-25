@@ -1,5 +1,5 @@
-import transporter from "../config/transporter.config.js";
-import config from "../config/index.js";
+const transporter = require("../config/transporter.config.js");
+const config = require("../config/index.js");
 
 const mailHelper = async (options) => {
   const message = {
@@ -13,4 +13,4 @@ const mailHelper = async (options) => {
   await transporter.sendMail(message);
 };
 
-export default mailHelper;
+module.exports = mailHelper;

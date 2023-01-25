@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import app from "./app.js";
-import config from "./config/index";
+const mongoose = require("mongoose");
+const app = require("./app.js");
+const config = require("./config/index");
 
 //create a fn
 // run a fn

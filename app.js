@@ -1,7 +1,7 @@
-import express from "express";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import morgan from "morgan";
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const morgan = require("morgan");
 
 const app = express();
 
@@ -13,4 +13,19 @@ app.use(cookieParser());
 //morgan logger
 app.use(morgan("tiny"));
 
-export default app;
+//import all routes
+const user = require("./routes/auth.route");
+
+
+//router middleware
+app.use("/api/v1", user);
+
+
+
+
+
+// app.get('/', (req, res) => {
+//     res.send("Welcome to ecommerse");
+// })
+
+module.exports=  app;

@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+const dotenv = require("dotenv");
 
 dotenv.config();
 
@@ -19,4 +19,4 @@ const config = {
   S3_REGION: process.env.S3_REGION,
 };
 
-export default config;
+module.exports = config;
