@@ -54,7 +54,7 @@ userSchema.methods = {
   //generate JWT TOKEN
 
   getJwtToken: function () {
-    console.log(config.JWT_SECRET);
+   
     return JWT.sign(
       {
         _id: this._id,

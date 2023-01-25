@@ -18,7 +18,7 @@ const user = require("./routes/auth.route");
 
 
 //router middleware
-app.use("/api/v1", user);
+app.use("/api/v1/auth", user);
 
 
 

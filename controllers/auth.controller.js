@@ -47,7 +47,7 @@ exports.signUp = asyncHandler(async (req, res) => {
 /******************************************************
  * @LOGIN
  * @route http://localhost:5000/api/auth/login
- * @description User signIn Controller for loging new user
+ * @description User signIn Controller for loging existing user
  * @parameters  email, password
  * @returns User Object
  ******************************************************/
@@ -84,12 +84,12 @@ exports.login = asyncHandler(async (req, res) => {
 /******************************************************
  * @LOGOUT
  * @route http://localhost:5000/api/auth/logout
- * @description User logout bby clearing user cookies
+ * @description User logout by clearing user cookies
  * @parameters
  * @returns success message
  ******************************************************/
 exports.logout = asyncHandler(async (_req, res) => {
-  // res.clearCookie()  also i can use this
+  // res.clearCookie()  or
   res.cookie("token", null, {
     expires: new Date(Date.now()),
     httpOnly: true,
@@ -116,7 +116,7 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
   if (!user) {
     throw new CustomError("User not found", 404);
   }
-  const resetToken = user.generateForgotPasswordToken();
+  const resetToken = user.genereteForgotPasswordToken();
 
   await user.save({ validateBeforeSave: false });
 
@@ -158,9 +158,10 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
  ******************************************************/
 
 exports.resetPassword = asyncHandler(async (req, res) => {
-  const { token: resetToken } = req.params;
+  
+  const resetToken = req.params.resetToken; 
   const { password, confirmPassword } = req.body;
-
+console.log(resetToken)
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(resetToken)

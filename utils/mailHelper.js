@@ -2,6 +2,7 @@ const transporter = require("../config/transporter.config.js");
 const config = require("../config/index.js");
 
 const mailHelper = async (options) => {
+  
   const message = {
     from: config.SMTP_MAIL_EMAIL, // sender address
     to: options.email, // list of receivers
