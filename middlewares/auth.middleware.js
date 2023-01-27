@@ -1,10 +1,10 @@
-import User from "../models/user.schema.js";
-import JWT from "jsonwebtoken";
-import asyncHandler from "../services/asyncHandler";
-import CustomError from "../utils/customError";
-import config from "../config/index.js";
+const User = require("../models/user.schema.js");
+const JWT = require("jsonwebtoken");
+const asyncHandler = require("../services/asyncHandler");
+const CustomError = require("../utils/customError");
+const config = require("../config/index.js");
 
-export const isLoggedIn = asyncHandler(async (req, _res, next) => {
+exports.isLoggedIn = asyncHandler(async (req, _res, next) => {
   let token;
 
   if (

@@ -77,10 +77,11 @@ userSchema.methods = {
       .update(forgotToken)
       .digest("hex");
 
-    this.forgotPasswordExpiry = Date.now() + 20 + 60 + 1000;
+    this.forgotPasswordExpiry = Date.now() + 20 * 60 * 1000;
 
     //step 2 return value to user
 
+   
     return forgotToken;
   },
 };

@@ -161,18 +161,19 @@ exports.resetPassword = asyncHandler(async (req, res) => {
   
   const resetToken = req.params.resetToken; 
   const { password, confirmPassword } = req.body;
-console.log(resetToken)
+
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
+
 
   // User.findOne({email: email})
   const user = await User.findOne({
     forgotPasswordToken: resetPasswordToken,
     forgotPasswordExpiry: { $gt: Date.now() },
   });
-
+  
   if (!user) {
     throw new CustomError("password token is invalid or expired", 400);
   }
