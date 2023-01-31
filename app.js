@@ -15,10 +15,12 @@ app.use(morgan("tiny"));
 
 //import all routes
 const user = require("./routes/auth.route");
+const collection = require("./routes/collection.route");
 
 
 //router middleware
 app.use("/api/v1/auth", user);
+app.use("/api/v1/collection", collection);
 
 
 
