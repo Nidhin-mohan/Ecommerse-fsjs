@@ -1,16 +1,17 @@
 const express = require("express");
 const router = express.Router();
 
-const { isLoggedIn } = require("../middlewares/auth.middleware");
-const { addProduct, getAllProducts, getProductById } = require("../controllers/product.controller")
+const { isLoggedIn, customRole } = require("../middlewares/auth.middleware");
+const { addProduct, getAllProducts, getProductById } = require("../controllers/product.controller");
+const { ADMIN } = require("../utils/authRoles");
 
 //user routes
-router.route("/all").get(getAllProducts);
-router.route("/:id").get(getProductById);
+router.route("/products").get(getAllProducts);
+router.route("/product/:id").get(getProductById);
 
 
 //admin routes
-router.route("/add").post(addProduct);
+router.route("/product").post(isLoggedIn, customRole(ADMIN), addProduct);
 
 
 

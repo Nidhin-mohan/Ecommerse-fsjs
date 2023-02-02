@@ -10,7 +10,7 @@ const config = require("../config/index");
 
 /**********************************************************
  * @ADD_PRODUCT
- * @route https://localhost:5000/api/product/add
+ * @route https://localhost:5000/api/product
  * @description Controller used for creating a new product
  * @description Only admin can add product
  * @descriptio Uses AWS S3 Bucket for image upload
@@ -36,7 +36,8 @@ exports.addProduct = asyncHandler(async (req, res) => {
       if (
         !fields.name ||
         !fields.price ||
-        !fields.description 
+        !fields.description ||
+        !fields.collectionId
       ) {
         throw new CustomError("Please fill all details", 500);
       }
@@ -131,3 +132,5 @@ exports.getProductById = asyncHandler(async (req, res) => {
   });
 });
 
+
+ 

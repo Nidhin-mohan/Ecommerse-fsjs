@@ -21,6 +21,6 @@ const product = require("./routes/product.route");
 //router middleware
 app.use("/api/v1/auth", user);
 app.use("/api/v1", collection);
-app.use("/api/v1/product", product);
+app.use("/api/v1", product);
 
 module.exports=  app;
