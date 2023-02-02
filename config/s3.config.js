@@ -1,5 +1,5 @@
-import aws from "aws-sdk";
-import config from "./index.js";
+const aws = require("aws-sdk");
+const config = require("./index.js");
 
 const s3 = new aws.S3({
   accessKeyId: config.S3_ACCESS_KEY,
@@ -7,4 +7,4 @@ const s3 = new aws.S3({
   region: config.S3_REGION,
 });
 
-export default s3;
+module.exports = s3;
