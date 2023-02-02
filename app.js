@@ -18,19 +18,9 @@ const user = require("./routes/auth.route");
 const collection = require("./routes/collection.route");
 const product = require("./routes/product.route");
 
-
-
 //router middleware
 app.use("/api/v1/auth", user);
-app.use("/api/v1/collection", collection);
+app.use("/api/v1", collection);
 app.use("/api/v1/product", product);
-
-
-
-
-
-// app.get('/', (req, res) => {
-//     res.send("Welcome to ecommerse");
-// })
 
 module.exports=  app;
