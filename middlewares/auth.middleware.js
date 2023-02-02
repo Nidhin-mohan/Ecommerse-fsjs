@@ -28,3 +28,19 @@ exports.isLoggedIn = asyncHandler(async (req, _res, next) => {
     throw new CustomError("NOt authorized to access this route", 401);
   }
 });
+
+
+
+exports.customRole = (...allowedRoles) => {
+  return (req, res, next) => {
+    const userRole = req.user.role;
+
+    if (!allowedRoles.includes(userRole)) {
+    
+     return next(new CustomError("You are not allowed for this resouce", 403));
+    }
+
+    next();
+  };
+};
+

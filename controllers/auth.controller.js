@@ -223,12 +223,107 @@ exports.getProfile = asyncHandler(async (req, res) => {
 
 
 
-exports.test = asyncHandler(async (req, res) => {
-  console.log("req incoming")
+/******************************************************
+ * @ADMIN_GET_ALL_USERS
+ * @route http://localhost:5000/api/auth/admin/users
+ * @description admin will get all users info
+ * @parameters 
+ * @returns Users Object
+ ******************************************************/
+
+exports.adminAllUser = asyncHandler(async (req, res) => {
+  // select all users
+  const users = await User.find();
+
+  // send all users
   res.status(200).json({
     success: true,
-    message: "hi there",
+    users,
+  });
+});
+
+
+/******************************************************
+ * @ADMIN_GET_ONE_USER
+ * @route http://localhost:5000/api/auth/admin/users/:id
+ * @description admin will get one user info
+ * @parameters id
+ * @returns User Object
+ ******************************************************/
+
+
+exports.admingetOneUser = asyncHandler(async (req, res, next) => {
+  // get id from url and get user from database
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    throw new CustomError("No user found", 400);
+  }
+
+  // send user
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+
+/******************************************************
+ * @ADMIN_UPDATE_ONE_USER_DETAILS
+ * @route http://localhost:5000/api/auth/admin/users/:id
+ * @description admin will update one user's info
+ * @parameters id, name, email, role
+ * @returns User Object
+ ******************************************************/
+
+
+exports.adminUpdateOneUserDetails = asyncHandler(async (req, res, next) => {
+  // add a check for email and name in body
+  if (!req.body.name || !req.body.email || !req.body.role) {
+    throw new CustomError("Please fill all fields", 400);
+  }
+  // get data from request body
+  const newData = {
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+  };
+
+  // update the user in database
+  const user = await User.findByIdAndUpdate(req.params.id, newData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
   });
 
-  
+  res.status(200).json({
+    success: true,
+  });
+});
+
+
+
+/******************************************************
+ * @ADMIN_DELETE_ONE_USER
+ * @route http://localhost:5000/api/auth/admin/users/:id
+ * @description admin will delete user with id
+ * @parameters id
+ * @returns 
+ ******************************************************/
+
+exports.adminDeleteOneUser = asyncHandler(async (req, res, next) => {
+  // get user from url
+  const user = await User.findById(req.params.id);
+
+  console.log(user)
+
+  if (!user) {
+    return next(new CustomError("No Such user found", 401));
+  }
+  // remove user from databse
+  await user.remove();
+
+  res.status(200).json({
+    success: true,
+  });
 });
