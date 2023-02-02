@@ -1,0 +1,36 @@
+openapi: "3.0.0"
+info:
+  title: Ecommerse API
+  description: API for Ecommerse website
+  version: 1.1.0
+ 
+
+servers:
+  - url: "{protocol}://{url}/api/{version}"
+    description: for local host 
+    variables:
+      version:
+        enum:
+          - v1
+          - v2
+        default: v1
+      url:
+        enum:
+          - localhost:4000
+          - 
+        default: localhost:4000
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+    BearerAuth:
+      type: http
+      scheme: bearer

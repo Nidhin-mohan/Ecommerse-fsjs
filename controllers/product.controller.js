@@ -29,9 +29,9 @@ exports.addProduct = asyncHandler(async (req, res) => {
       if (err) {
         throw new CustomError(err.message || "Something went wrong", 500);
       }
-      let productId = new Mongoose.Types.ObjectId().toHexString();
-    //   console.log(fields, files.photos)
 
+      let productId = new Mongoose.Types.ObjectId().toHexString();
+    
       // check for fields
       if (
         !fields.name ||
@@ -46,8 +46,13 @@ exports.addProduct = asyncHandler(async (req, res) => {
       let imgArrayResp = Promise.all(
         Object.keys(files).map(async (filekey, index) => {
           const element = files[filekey];
-            
+
+          console.log(`line 50 ${element.filepath} `)
+          console.log(typeof(element))
+        
           const data = fs.readFileSync(element.filepath);
+
+          console.log("line 62", data);
 
         //   console.log(typeof(s3FileUpload))
           const upload = await s3FileUpload({
