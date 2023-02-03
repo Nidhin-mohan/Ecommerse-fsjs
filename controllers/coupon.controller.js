@@ -34,12 +34,10 @@ exports.createCoupon = asyncHandler(async (req, res) => {
   //send this response value to frontend
   res.status(200).json({
     success: true,
-    message: "coupon created with success",
+    message: "Coupon Created SuccessFull",
     coupon,
   });
 });
-
-
 
 /**********************************************************
  * @DEACTIVATE_COUPON
@@ -51,13 +49,14 @@ exports.createCoupon = asyncHandler(async (req, res) => {
 
 
 exports.deactivateCoupon = asyncHandler(async (req, res) => {
-  const { id } = req.param;
-  if (!id) {
+  const { couponId } = req.params;
+ 
+  if (!couponId) {
     throw new CustomError("missing coupon id", 400);
   }
 
-  let deactivatedCoupon = await Collection.findByIdAndUpdate(
-    id,
+  let coupon = await Coupon.findByIdAndUpdate(
+    couponId,
     {
       active: false,
     },
@@ -70,8 +69,8 @@ exports.deactivateCoupon = asyncHandler(async (req, res) => {
   //send this response value to frontend
   res.status(200).json({
     success: true,
-    message: "coupon is succesfully deactivated",
-    deactivatedCoupon,
+    message: "Coupon Deactivated SuccessFully",
+    coupon,
   });
 });
   
