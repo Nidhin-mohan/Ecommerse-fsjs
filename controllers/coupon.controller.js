@@ -12,9 +12,18 @@ const CustomError = require("../utils/customError");
 
 exports.createCoupon = asyncHandler(async (req, res) => {
   const { code, discount } = req.body;
-
+  
+  
   if (!code || !discount) {
     throw new CustomError(" Coupon code, discount is required", 400);
+  }
+
+  const couponExist = await Coupon.findOne({code});
+
+  console.log(couponExist)
+
+  if (couponExist) {
+    throw new CustomError(" Coupon code already exist", 500);
   }
 
   //add this name to database
@@ -42,7 +51,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
 
 
 exports.deactivateCoupon = asyncHandler(async (req, res) => {
-    const {id} = req.param
+  const { id } = req.param;
   if (!id) {
     throw new CustomError("missing coupon id", 400);
   }
@@ -57,14 +66,15 @@ exports.deactivateCoupon = asyncHandler(async (req, res) => {
       runValidators: true,
     }
   );
-  
-  });
+
   //send this response value to frontend
   res.status(200).json({
     success: true,
     message: "coupon is succesfully deactivated",
     deactivatedCoupon,
   });
+});
+  
 
 
 /**********************************************************
@@ -85,12 +95,14 @@ exports.deleteCoupon = asyncHandler(async (req, res) => {
   let deletedCoupon = await Collection.findByIdAndDelete(id);
 
   deletedCoupon.remove();
+
+  //send this response value to frontend
+  res.status(200).json({
+    success: true,
+    message: "coupon is succesfully deleted",
+  });
 });
-//send this response value to frontend
-res.status(200).json({
-  success: true,
-  message: "coupon is succesfully deleted",
-});
+
 
 
 /**********************************************************

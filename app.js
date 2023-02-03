@@ -24,10 +24,12 @@ app.use(morgan("tiny"));
 const user = require("./routes/auth.route");
 const collection = require("./routes/collection.route");
 const product = require("./routes/product.route");
+const coupon = require("./routes/coupon.route");
 
 //router middleware
 app.use("/api/v1/auth", user);
 app.use("/api/v1", collection);
 app.use("/api/v1", product);
+app.use("/api/v1", coupon);
 
 module.exports=  app;
