@@ -86,19 +86,19 @@ exports.deactivateCoupon = asyncHandler(async (req, res) => {
 
 
 exports.deleteCoupon = asyncHandler(async (req, res) => {
-  const { id } = req.param;
-  if (!id) {
+  const { couponId } = req.params;
+  if (!couponId) {
     throw new CustomError("missing coupon id", 400);
   }
 
-  let deletedCoupon = await Collection.findByIdAndDelete(id);
+  let deletedCoupon = await Coupon.findByIdAndDelete(couponId);
 
   deletedCoupon.remove();
 
   //send this response value to frontend
   res.status(200).json({
     success: true,
-    message: "coupon is succesfully deleted",
+    message: "Coupon Deleted SuccessFully",
   });
 });
 
