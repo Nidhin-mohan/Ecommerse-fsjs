@@ -1,3 +1,7 @@
+const Coupon = require("../models/coupon.schema");
+const asyncHandler = require("../services/asyncHandler");
+const CustomError = require("../utils/customError");
+
 /**********************************************************
  * @CREATE_COUPON
  * @route https://localhost:5000/api/coupon
@@ -5,6 +9,28 @@
  * @description Only admin and Moderator can create the coupon
  * @returns Coupon Object with success message "Coupon Created SuccessFully"
  *********************************************************/
+
+exports.createCoupon = asyncHandler(async (req, res) => {
+  const { code, discount } = req.body;
+
+  if (!code || !discount) {
+    throw new CustomError(" Coupon code, discount is required", 400);
+  }
+
+  //add this name to database
+  const coupon = await Coupon.create({
+    code,
+    discount
+  });
+  //send this response value to frontend
+  res.status(200).json({
+    success: true,
+    message: "coupon created with success",
+    coupon,
+  });
+});
+
+
 
 /**********************************************************
  * @DEACTIVATE_COUPON
@@ -14,6 +40,33 @@
  * @returns Coupon Object with success message "Coupon Deactivated SuccessFully"
  *********************************************************/
 
+
+exports.deactivateCoupon = asyncHandler(async (req, res) => {
+    const {id} = req.param
+  if (!id) {
+    throw new CustomError("missing coupon id", 400);
+  }
+
+  let deactivatedCoupon = await Collection.findByIdAndUpdate(
+    id,
+    {
+      active: false,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  
+  });
+  //send this response value to frontend
+  res.status(200).json({
+    success: true,
+    message: "coupon is succesfully deactivated",
+    deactivatedCoupon,
+  });
+
+
 /**********************************************************
  * @DELETE_COUPON
  * @route https://localhost:5000/api/coupon/:couponId
@@ -22,6 +75,24 @@
  * @returns Success Message "Coupon Deleted SuccessFully"
  *********************************************************/
 
+
+exports.deleteCoupon = asyncHandler(async (req, res) => {
+  const { id } = req.param;
+  if (!id) {
+    throw new CustomError("missing coupon id", 400);
+  }
+
+  let deletedCoupon = await Collection.findByIdAndDelete(id);
+
+  deletedCoupon.remove();
+});
+//send this response value to frontend
+res.status(200).json({
+  success: true,
+  message: "coupon is succesfully deleted",
+});
+
+
 /**********************************************************
  * @GET_ALL_COUPONS
  * @route https://localhost:5000/api/coupon
@@ -29,3 +100,17 @@
  * @description Only admin and Moderator can get all the coupons
  * @returns allCoupons Object
  *********************************************************/
+
+
+exports.getAllCoupons = asyncHandler(async (req, res) => {
+  const coupons = await Coupon.find();
+
+  if (!coupons) {
+    throw new CustomError("No coupon found", 400);
+  }
+
+  res.status(200).json({
+    success: true,
+    coupons,
+  });
+});
