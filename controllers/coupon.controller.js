@@ -10,6 +10,7 @@ const CustomError = require("../utils/customError");
  * @returns Coupon Object with success message "Coupon Created SuccessFully"
  *********************************************************/
 
+
 exports.createCoupon = asyncHandler(async (req, res) => {
   const { code, discount } = req.body;
   

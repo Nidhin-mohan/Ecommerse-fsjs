@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
-import OrderStatus from "../utils/orderStatus";
+const mongoose = require("mongoose");
+const OrderStatus = require("../utils/orderStatus");
+
 
 const orderSchema = new mongoose.Schema(
   {
@@ -40,7 +41,6 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: Object.values(OrderStatus),
       default: "ORDERED",
-      
     },
     //paymentMode: UPI, creditcard or wallet, COD can be added
   },
@@ -49,4 +49,4 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Order", orderSchema);
+module.exports = mongoose.model("Order", orderSchema);
