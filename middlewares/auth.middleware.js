@@ -16,16 +16,18 @@ exports.isLoggedIn = asyncHandler(async (req, _res, next) => {
   }
 
   if (!token) {
-    throw new CustomError("NOt authorized to access this route", 401);
+    throw new CustomError("Not authorized to access this route", 401);
   }
 
   try {
     const decodedJwtPayload = JWT.verify(token, config.JWT_SECRET);
     //_id, find user based on id, set this in req.user
+
+
     req.user = await User.findById(decodedJwtPayload._id, "name email role");
     next();
   } catch (error) {
-    throw new CustomError("NOt authorized to access this route", 401);
+    throw new CustomError("Not authorized to access this route", 401);
   }
 });
 
