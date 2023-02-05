@@ -292,5 +292,85 @@ paths:
           description: Bad request
         500:
           description: internal server error
+  
+  /auth/password/change:
+    post:
+      tags:
+        - User
+      summary: User can update the password if he is logged in. Send oldPassword and newPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - oldPassword
+                - newPassword
+              properties:
+                oldPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string                      
+                      _id:
+                        type: string
+                      createdAt:
+                        type: string
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /auth/profile/update:
+    put:
+      tags:
+        - User
+      summary: User can update the name, emails and photo. Photo is optional
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string               
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  
+        400:
+          description: Bad request
+        500:
+          description: internal server error        
 
  

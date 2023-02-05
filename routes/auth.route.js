@@ -14,7 +14,6 @@ router.route("/password/:resetToken").post(resetPassword);
 router.route("/profile").get(isLoggedIn,  getProfile);
 router.route("/profile/update").put(isLoggedIn, updateUserProfile );
 
-
 //admin routes
 
 router.route("/admin/users").get(isLoggedIn, customRole(ADMIN), adminAllUser);

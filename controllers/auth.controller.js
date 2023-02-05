@@ -310,8 +310,6 @@ exports.updateUserProfile = asyncHandler(async (req, res) => {
   });
 });
 
-
-
 /******************************************************
  * @ADMIN_GET_ALL_USERS
  * @route http://localhost:5000/api/auth/admin/users
