@@ -159,4 +159,97 @@ paths:
         500:
           description: internal server error
 
+  /auth/password/forgot:
+    post:
+      tags:
+        - User
+      summary: sends an email with link to forgot password. Contains the token for user validation. Public hosted version will not send email to your account. Use your own SMTP details to access this feature on local project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /auth/password/{resetToken}:
+    post:
+      tags:
+        - User
+      summary: Allows user to reset password, validated based on token. send password and confirm password fields
+      parameters:
+        - name: resetToken
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+                - confirmPassword
+              properties:
+                password:
+                  type: string
+                confirmPassword:
+                  type: string
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                      photo:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          secure_url:
+                            type: string
+                      _id:
+                        type: string
+                      createdAt:
+                        type: string
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
  

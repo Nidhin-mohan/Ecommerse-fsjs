@@ -160,7 +160,11 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
 exports.resetPassword = asyncHandler(async (req, res) => {
   
   const resetToken = req.params.resetToken; 
+
+ 
+  
   const { password, confirmPassword } = req.body;
+
 
   const resetPasswordToken = crypto
     .createHash("sha256")

@@ -9,7 +9,7 @@ router.route("/signup").post(signUp);
 router.route("/login").post(login);
 router.route("/logout").get(isLoggedIn, logout);
 router.route("/password/forgot").post(forgotPassword);
-router.route("/password/reset/:resetToken").post(resetPassword);
+router.route("/password/:resetToken").post(resetPassword);
 router.route("/profile").get(isLoggedIn,  getProfile);
 
 //admin routes
