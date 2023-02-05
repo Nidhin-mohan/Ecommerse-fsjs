@@ -229,7 +229,7 @@ exports.getProfile = asyncHandler(async (req, res) => {
 
 /******************************************************
  * @CHANGE_PASSWORD
- * @REQUEST_TYPE PUT
+ * @REQUEST_TYPE POST
  * @route http://localhost:5000/api/auth/password/change
  * @description check for token and populate req.user
  * @parameters oldPassword, newPassword
@@ -276,6 +276,39 @@ exports.changePassword = asyncHandler(async (req, res) => {
   });
 });
 
+
+/******************************************************
+ * @UPDATE_USER_DETAILS
+ * @REQUEST_TYPE PUT
+ * @route http://localhost:5000/api/auth/profile/update
+ * @description update user's name , email
+ * @parameters name, email
+ * @returns User Object
+ ******************************************************/
+
+exports.updateUserProfile = asyncHandler(async (req, res) => {
+  // get name, email form body
+  const { name, email } = req.body;
+
+  if (!name || !email) {
+    throw new CustomError("All field should be filled", 400);
+  }
+
+  const userId = req.user.id;
+
+  const user = await User.findById(userId);
+
+  user.name = name;
+  user.email = email;
+
+  // save user and send fresh token
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
 
 
 

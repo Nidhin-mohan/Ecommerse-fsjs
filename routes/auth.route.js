@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { signUp, login, logout, forgotPassword, resetPassword, getProfile, adminAllUser, admingetOneUser, adminUpdateOneUserDetails, adminDeleteOneUser, changePassword } = require("../controllers/auth.controller")
+const { signUp, login, logout, forgotPassword, resetPassword, getProfile, adminAllUser, admingetOneUser, adminUpdateOneUserDetails, adminDeleteOneUser, changePassword, updateUserProfile  } = require("../controllers/auth.controller")
 const { isLoggedIn, customRole } = require("../middlewares/auth.middleware");
 const { ADMIN } = require("../utils/authRoles");
 
@@ -12,6 +12,7 @@ router.route("/password/change").post(isLoggedIn, changePassword);
 router.route("/password/forgot").post(forgotPassword);
 router.route("/password/:resetToken").post(resetPassword);
 router.route("/profile").get(isLoggedIn,  getProfile);
+router.route("/profile/update").put(isLoggedIn, updateUserProfile );
 
 
 //admin routes
