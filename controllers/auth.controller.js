@@ -32,7 +32,7 @@ exports.signUp = asyncHandler(async (req, res) => {
     password,
   });
   const token = user.getJwtToken();
-  console.log(user);
+
   user.password = undefined;
 
   res.cookie("token", token, cookieOptions);
@@ -214,6 +214,7 @@ exports.resetPassword = asyncHandler(async (req, res) => {
  * @parameters
  * @returns User Object
  ******************************************************/
+
 exports.getProfile = asyncHandler(async (req, res) => {
   const { user } = req;
   if (!user) {
@@ -224,6 +225,57 @@ exports.getProfile = asyncHandler(async (req, res) => {
     user,
   });
 });
+
+
+/******************************************************
+ * @CHANGE_PASSWORD
+ * @REQUEST_TYPE PUT
+ * @route http://localhost:5000/api/auth/password/change
+ * @description check for token and populate req.user
+ * @parameters oldPassword, newPassword
+ * @returns User Object
+ ******************************************************/
+
+exports.changePassword = asyncHandler(async (req, res) => {
+  // get new and old password form body
+  const { newPassword, oldPassword } = req.body;
+
+  
+  if (!newPassword || !oldPassword) {
+    throw new CustomError("All field should be filled", 400);
+  }
+
+  // get user from middleware
+  const userId = req.user.id;
+
+  // get user from database
+  const user = await User.findById(userId).select("+password");
+
+  if (!user) {
+    throw new CustomError("User not found", 404);
+  }
+
+  //check if old password is correct
+  const isValidated = await user.comparePassword(oldPassword);
+
+  if (isValidated) {
+    throw new CustomError("Old password is incorrect", 400);
+  }
+
+  // allow to set new password
+  user.password = newPassword ;
+
+  // save user and send fresh token
+  await user.save();
+
+   user.password = undefined;
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
 
 
 
