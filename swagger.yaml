@@ -373,4 +373,146 @@ paths:
         500:
           description: internal server error        
 
- 
+  /auth/admin/users:
+    get:
+      tags:
+        - Admin
+      summary: If user is admin, response will get array of all users
+      requestBody:
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        role:
+                          type: string                    
+                        _id:
+                          type: string
+                        createdAt:
+                          type: string
+                  
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /auth/admin/users/{id}:
+    get:
+      tags:
+        - Admin
+      summary: If user is admin, response will get details of 1 user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    user:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        role:
+                          type: string                      
+                        _id:
+                          type: string
+                        createdAt:
+                          type: string
+                  
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+    put:
+      tags:
+        - Admin
+      summary: If user is admin, he can update mentioned fields in user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: formData
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: formData
+          required: true
+          schema:
+            type: string
+        - name: role
+          in: formData
+          required: true
+          schema:
+            type: string
+            enum: [USER, ADMIN, MODERATOR]
+      requestBody: 
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                  
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+    delete:
+      tags:
+        - Admin
+      summary: If user is admin, delete the user with given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody: 
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                  
+        400:
+          description: Bad request
+        500:
+          description: internal server error 

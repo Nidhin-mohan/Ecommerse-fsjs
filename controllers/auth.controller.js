@@ -365,19 +365,26 @@ exports.admingetOneUser = asyncHandler(async (req, res, next) => {
 
 
 exports.adminUpdateOneUserDetails = asyncHandler(async (req, res, next) => {
+
+  const { role} = req.body
+  const {id, name, email} = req.params
+
+  console.log(name, email, role, id, );
+
   // add a check for email and name in body
   if (!req.body.name || !req.body.email || !req.body.role) {
     throw new CustomError("Please fill all fields", 400);
   }
   // get data from request body
   const newData = {
-    name: req.body.name,
-    email: req.body.email,
-    role: req.body.role,
+    name,
+    email,
+    role,
   };
 
+  console.log(newData)
   // update the user in database
-  const user = await User.findByIdAndUpdate(req.params.id, newData, {
+  const user = await User.findByIdAndUpdate(id, newData, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
