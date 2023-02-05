@@ -456,25 +456,26 @@ paths:
         - name: id
           in: path
           required: true
-          schema:
-            type: string
-        - name: name
-          in: formData
-          required: true
-          schema:
-            type: string
-        - name: email
-          in: formData
-          required: true
-          schema:
-            type: string
-        - name: role
-          in: formData
-          required: true
-          schema:
-            type: string
-            enum: [USER, ADMIN, MODERATOR]
-      requestBody: 
+     
+      requestBody:
+         content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name: 
+                  type: string
+                  required: true
+                email:
+                  type: string
+                  required: true
+                role:
+                  type: string
+                  enum: [USER, ADMIN, MODERATOR]
+               
       responses:
         200:
           description: All good success

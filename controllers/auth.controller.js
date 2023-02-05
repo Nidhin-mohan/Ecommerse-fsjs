@@ -41,6 +41,7 @@ exports.signUp = asyncHandler(async (req, res) => {
     success: true,
     token,
     user,
+     
   });
 });
 
@@ -75,6 +76,7 @@ exports.login = asyncHandler(async (req, res) => {
       success: true,
       token,
       user,
+    
     });
   }
 
@@ -366,10 +368,10 @@ exports.admingetOneUser = asyncHandler(async (req, res, next) => {
 
 exports.adminUpdateOneUserDetails = asyncHandler(async (req, res, next) => {
 
-  const { role} = req.body
-  const {id, name, email} = req.params
+  const { name, email, role } = req.body;
+  const {id } = req.params
 
-  console.log(name, email, role, id, );
+  
 
   // add a check for email and name in body
   if (!req.body.name || !req.body.email || !req.body.role) {
