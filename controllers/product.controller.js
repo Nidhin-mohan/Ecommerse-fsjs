@@ -42,19 +42,18 @@ exports.addProduct = asyncHandler(async (req, res) => {
         throw new CustomError("Please fill all details", 500);
       }
 
+      let filesArray = files.photos;
+      
+      filesArray = Array.isArray(filesArray) ? filesArray : [filesArray];
+
       // handling images
       let imgArrayResp = Promise.all(
-        Object.keys(files).map(async (filekey, index) => {
-          const element = files[filekey];
+        filesArray.map(async (element, index) => {
+          
 
-          console.log(`line 50 ${element.filepath} `)
-          console.log(typeof(element))
-        
           const data = fs.readFileSync(element.filepath);
 
-          console.log("line 62", data)
-
-        //   console.log(typeof(s3FileUpload))
+          console.log(typeof s3FileUpload);
           const upload = await s3FileUpload({
             bucketName: config.S3_BUCKET_NAME,
             key: `products/${productId}/photo_${index + 1}.png`,
@@ -62,14 +61,16 @@ exports.addProduct = asyncHandler(async (req, res) => {
             contentType: element.mimetype,
           });
 
-          console.log("first line 65")
+          console.log("first line 65");
           return {
             secure_url: upload.Location,
           };
         })
       );
 
+
       let imgArray = await imgArrayResp;
+
 
       const product = await Product.create({
         _id: productId,
