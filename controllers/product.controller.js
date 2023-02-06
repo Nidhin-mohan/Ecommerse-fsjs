@@ -30,9 +30,9 @@ exports.addProduct = asyncHandler(async (req, res) => {
       if (err) {
         throw new CustomError(err.message || "Something went wrong", 500);
       }
-
+ 
       let productId = new Mongoose.Types.ObjectId().toHexString();
-    
+      let imgArray;
       // check for fields
       if (
         !fields.name ||
@@ -43,34 +43,40 @@ exports.addProduct = asyncHandler(async (req, res) => {
         throw new CustomError("Please fill all details", 500);
       }
 
-      let filesArray = files.photos;
-      
-      filesArray = Array.isArray(filesArray) ? filesArray : [filesArray];
+      if (!files.photos) {
+        throw new CustomError("Please fill photos", 401);
+        //remove image
+      }
+      else {
+          let filesArray = files.photos;
 
-      // handling images
-      let imgArrayResp = Promise.all(
-        filesArray.map(async (element, index) => {
-          
+          filesArray = Array.isArray(filesArray) ? filesArray : [filesArray];
 
-          const data = fs.readFileSync(element.filepath);
+          // handling images
+          let imgArrayResp = Promise.all(
+            filesArray.map(async (element, index) => {
+              const data = fs.readFileSync(element.filepath);
 
-          console.log(typeof s3FileUpload);
-          const upload = await s3FileUpload({
-            bucketName: config.S3_BUCKET_NAME,
-            key: `products/${productId}/photo_${index + 1}.png`,
-            body: data,
-            contentType: element.mimetype,
-          });
+              console.log(typeof s3FileUpload);
+              const upload = await s3FileUpload({
+                bucketName: config.S3_BUCKET_NAME,
+                key: `products/${productId}/photo_${index + 1}.png`,
+                body: data,
+                contentType: element.mimetype,
+              });
 
-          console.log("first line 65");
-          return {
-            secure_url: upload.Location,
-          };
-        })
-      );
+              console.log("first line 65");
+              return {
+                secure_url: upload.Location,
+              };
+            })
+          );
 
+           imgArray = await imgArrayResp;
+      }
+      console.log("files", files, fields);
 
-      let imgArray = await imgArrayResp;
+    
 
 
       const product = await Product.create({
@@ -263,9 +269,10 @@ exports.deleteReview = asyncHandler(async (req, res) => {
 
 
 
+
 /**********************************************************
  * @ADMIN_DELETE_PRODUCT
- * @route https://localhost:5000/api/admin/product
+ * @route https://localhost:5000/api/admin/product/:productId
  * @description Admin route to delete a product
  * @description admin can delete a product using product id
  * @returns Succes message Product has been deleted succesfully
