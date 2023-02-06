@@ -13,7 +13,7 @@ const config = require("../config/index");
  * @route https://localhost:5000/api/product
  * @description Controller used for creating a new product
  * @description Only admin can add product
- * @descriptio Uses AWS S3 Bucket for image upload
+ * @description Uses AWS S3 Bucket for image upload
  * @returns Product Object
  *********************************************************/
 
@@ -98,7 +98,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
 /**********************************************************
  * @GET_ALL_PRODUCT
  * @route https://localhost:5000/api/product
- * @description Controller used for getting all products details
+ * @description Controller used for getting all products   details
  * @description User and admin can get all the prducts
  * @returns Products Object
  *********************************************************/
@@ -118,7 +118,7 @@ exports.getAllProducts = asyncHandler(async (req, res) => {
 
 /**********************************************************
  * @GET_PRODUCT_BY_ID
- * @route https://localhost:5000/api/product
+ * @route https://localhost:5000/api/product/:id
  * @description Controller used for getting single product details
  * @description User and admin can get single product details
  * @returns Product Object
@@ -141,4 +141,63 @@ exports.getProductById = asyncHandler(async (req, res) => {
 });
 
 
+/**********************************************************
+ * @GET_ADD_REVIEW
+ * @route https://localhost:5000/api/product/review/:productId
+ * @description Controller used for add/update review
+ * @description User  can a add product review
+ * @returns Products Object
+ *********************************************************/
+
+exports.addReview = asyncHandler(async (req, res) => {
  
+   const { rating, comment} = req.body;
+   const { productId } = req.params;
+
+  if (!rating || !comment ) {
+    throw new CustomError("Please fill all fields", 400);
+  }
+
+  const review = {
+    user: req.user._id,
+    name: req.user.name,
+    rating: Number(rating),
+    comment,
+  };
+
+  const product = await Product.findById(productId);
+
+  
+  const AlreadyReview = product.reviews.find(
+    (rev) => rev.user.toString() === req.user._id.toString()
+  );
+
+  if (AlreadyReview) {
+    product.reviews.forEach((review) => {
+      if (review.user.toString() === req.user._id.toString()) {
+        review.comment = comment;
+        review.rating = rating;
+      }
+    });
+  } else {
+    product.reviews.push(review);
+    product.numberOfReviews = product.reviews.length;
+  }
+
+  // adjust ratings
+
+  product.ratings =
+    product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+    product.reviews.length;
+
+  //save
+
+  await product.save({ validateBeforeSave: false });
+
+
+  res.status(200).json({
+    success: true,
+    product,
+  });
+});
+
