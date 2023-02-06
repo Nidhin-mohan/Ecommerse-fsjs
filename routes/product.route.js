@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { isLoggedIn, customRole } = require("../middlewares/auth.middleware");
-const { addProduct, getAllProducts, getProductById, addReview, deleteReview } = require("../controllers/product.controller");
+const { addProduct, getAllProducts, getProductById, addReview, deleteReview, adminDeleteOneProduct } = require("../controllers/product.controller");
 const { ADMIN } = require("../utils/authRoles");
 
 //user routes
@@ -16,7 +16,10 @@ router
 
 
 //admin routes
-router.route("/product").post(isLoggedIn, customRole(ADMIN), addProduct);
+router.route("/admin/product").post(isLoggedIn, customRole(ADMIN), addProduct);
+router
+  .route("/admin/product/:productId")
+  .delete(isLoggedIn, customRole(ADMIN), adminDeleteOneProduct);
 
 
 

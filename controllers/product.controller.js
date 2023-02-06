@@ -6,6 +6,7 @@ const Mongoose = require("mongoose");
 const asyncHandler = require("../services/asyncHandler");
 const CustomError = require("../utils/customError");
 const config = require("../config/index");
+const { findById } = require("../models/product.schema");
 
 
 /**********************************************************
@@ -117,7 +118,7 @@ exports.getAllProducts = asyncHandler(async (req, res) => {
 
 
 /**********************************************************
- * @GET_PRODUCT_BY_ID
+ * @PRODUCT_BY_ID
  * @route https://localhost:5000/api/product/:id
  * @description Controller used for getting single product details
  * @description User and admin can get single product details
@@ -130,9 +131,9 @@ exports.getProductById = asyncHandler(async (req, res) => {
 
   const product = await Product.findById(productId);
 
-  console.log(product)
+  
   if (!product) {
-    throw new CustomError("No product was found", 404);
+    throw new CustomError("No product was found", 401);
   }
   res.status(200).json({
     success: true,
@@ -166,6 +167,10 @@ exports.addReview = asyncHandler(async (req, res) => {
   };
 
   const product = await Product.findById(productId);
+
+   if (!product) {
+     throw new CustomError("No product was found", 401);
+   }
 
   
   const AlreadyReview = product.reviews.find(
@@ -203,10 +208,10 @@ exports.addReview = asyncHandler(async (req, res) => {
 
 
 /**********************************************************
- * @GET_ADD_REVIEW
+ * @DELETE_REVIEW
  * @route https://localhost:5000/api/product/review/:productId
- * @description Controller used for add/update review
- * @description User  can a add product review
+ * @description Controller used for delete review
+ * @description User  can delete product review  added by him
  * @returns Products Object
  *********************************************************/
 
@@ -217,24 +222,14 @@ exports.deleteReview = asyncHandler(async (req, res) => {
   
   const product = await Product.findById(productId);
 
+   if (!product) {
+     throw new CustomError("No product was found", 401);
+   }
+
   const reviews = product.reviews.filter(
     (rev) => rev.user.toString() !== req.user._id.toString()
   );  
 
-  console.log("review", reviews)
-
-  reviews.forEach((e) =>
-    console.log(
-      "from db",
-      e.user.toString(),
-      "from req",
-      req.user._id.toString()
-    )
-  );
-
-  if (product.reviews.user === req.user._id.toString()) {
-    console.log("something went wrong in 225", reviews.user);
-  }
 
   const numberOfReviews = reviews.length;
 
@@ -266,6 +261,46 @@ exports.deleteReview = asyncHandler(async (req, res) => {
   });
 });
 
+
+
+/**********************************************************
+ * @ADMIN_DELETE_PRODUCT
+ * @route https://localhost:5000/api/admin/product
+ * @description Admin route to delete a product
+ * @description admin can delete a product using product id
+ * @returns Succes message Product has been deleted succesfully
+ *********************************************************/
+
+
+exports.adminDeleteOneProduct = asyncHandler(async (req, res) => {
+ 
+  const { productId } = req.params
+
+  const product = await Product.findById(productId);
+
+   if (!product) {
+     throw new CustomError("No product was found", 401);
+   }
+
+
+  //destroy the existing image
+
+  for (let index = 0; index < product.photos.length; index++) {
+
+    const res = await deleteFile({
+      bucketName: config.S3_BUCKET_NAME,
+      key: product.photos[index].id,
+    });
+   
+  }
+
+  await product.remove();
+
+  res.status(200).json({
+    success: true,
+   message: "Product has been deleted succesfully"
+  });
+});
 
 
 
