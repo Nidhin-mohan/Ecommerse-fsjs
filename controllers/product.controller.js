@@ -201,3 +201,72 @@ exports.addReview = asyncHandler(async (req, res) => {
   });
 });
 
+
+/**********************************************************
+ * @GET_ADD_REVIEW
+ * @route https://localhost:5000/api/product/review/:productId
+ * @description Controller used for add/update review
+ * @description User  can a add product review
+ * @returns Products Object
+ *********************************************************/
+
+exports.deleteReview = asyncHandler(async (req, res) => {
+ 
+   const { productId } = req.params;
+
+  
+  const product = await Product.findById(productId);
+
+  const reviews = product.reviews.filter(
+    (rev) => rev.user.toString() !== req.user._id.toString()
+  );  
+
+  console.log("review", reviews)
+
+  reviews.forEach((e) =>
+    console.log(
+      "from db",
+      e.user.toString(),
+      "from req",
+      req.user._id.toString()
+    )
+  );
+
+  if (product.reviews.user === req.user._id.toString()) {
+    console.log("something went wrong in 225", reviews.user);
+  }
+
+  const numberOfReviews = reviews.length;
+
+  // adjust ratings
+
+  const ratings =
+    product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+    product.reviews.length;
+
+  //update the product
+
+  await Product.findByIdAndUpdate(
+    productId,
+    {
+      reviews,
+      ratings,
+      numberOfReviews,
+    },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
+  res.status(200).json({
+    success: true,
+    message: "Review succesfully  deleted",
+   
+  });
+});
+
+
+
+
+ 
