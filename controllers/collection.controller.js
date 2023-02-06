@@ -4,7 +4,7 @@ const CustomError = require("../utils/customError");
 
 /******************************************************
  * @Create_COLLECTION
- * @route http://localhost:5000/api/collection/create
+ * @route http://localhost:5000/api/collection
  * @description CreateCollection controller for creating new collection
  * @parameters name
  * @returns User Object
@@ -32,7 +32,7 @@ exports.createCollection = asyncHandler(async (req, res) => {
 
 /******************************************************
  * @Update_COLLECTION
- * @route http://localhost:5000/api/collection/update
+ * @route http://localhost:5000/api/collection/:id
  * @description UpdateCollection controller for updating existing collection
  * @parameters name, id
  * @returns User Object
@@ -41,7 +41,7 @@ exports.createCollection = asyncHandler(async (req, res) => {
 exports.updateCollection = asyncHandler(async (req, res) => {
   //existing value to be updates
   const { id: collectionId } = req.params;
-  console.log(collectionId)
+ 
   //new value to get updated
   const { name } = req.body;
 
@@ -74,8 +74,8 @@ exports.updateCollection = asyncHandler(async (req, res) => {
 
 /******************************************************
  * @Delete_COLLECTION
- * @route http://localhost:5000/api/collection/delete
- * @description DeleteCollection controller for deleting  collection
+ * @route http://localhost:5000/api/collection/:id
+ * @description DeleteCollection controller for deleting     collection
  * @parameters id
  * @returns User Object
  ******************************************************/

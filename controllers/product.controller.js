@@ -52,7 +52,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
         
           const data = fs.readFileSync(element.filepath);
 
-          console.log("line 62", data);
+          console.log("line 62", data)
 
         //   console.log(typeof(s3FileUpload))
           const upload = await s3FileUpload({
@@ -61,6 +61,8 @@ exports.addProduct = asyncHandler(async (req, res) => {
             body: data,
             contentType: element.mimetype,
           });
+
+          console.log("first line 65")
           return {
             secure_url: upload.Location,
           };
