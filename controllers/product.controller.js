@@ -269,10 +269,103 @@ exports.deleteReview = asyncHandler(async (req, res) => {
 
 
 
+/**********************************************************
+ * @UPDATE_PRODUCT
+ * @route https://localhost:5000/api/admin/product/:id
+ * @description Controller used for updating a product
+ * @description Only admin can update product
+ * @description Uses AWS S3 Bucket for image upload
+ * @returns Product Object
+ *********************************************************/
+
+
+exports.adminUpdateProduct = asyncHandler(async (req, res) => {
+ const {id} = req.params;
+  
+ const product = await Product.findById(id)
+
+ let productId = new Mongoose.Types.ObjectId().toHexString
+
+
+ const form = formidable({
+   multiples: true,
+   keepExtensions: true,
+ });
+
+ form.parse(req, async function (err, fields, files) {
+   try {
+     if (err) {
+       throw new CustomError(err.message || "Something went wrong", 500);
+     }
+
+     let productId = new Mongoose.Types.ObjectId().toHexString();
+     let imgArray;
+     // check for fields
+     if (
+       !fields.name ||
+       !fields.price ||
+       !fields.description ||
+       !fields.collectionId
+     ) {
+       throw new CustomError("Please fill all details", 500);
+     }
+
+     if (files.photos)  {
+       let filesArray = files.photos;
+
+       filesArray = Array.isArray(filesArray) ? filesArray : [filesArray];
+
+       // handling images
+       let imgArrayResp = Promise.all(
+         filesArray.map(async (element, index) => {
+           const data = fs.readFileSync(element.filepath);
+
+           console.log(typeof s3FileUpload);
+           const upload = await s3FileUpload({
+             bucketName: config.S3_BUCKET_NAME,
+             key: `products/${productId}/photo_${index + 1}.png`,
+             body: data,
+             contentType: element.mimetype,
+           });
+
+           console.log("first line 65");
+           return {
+             secure_url: upload.Location,
+           };
+         })
+       );
+
+       imgArray = await imgArrayResp;
+     }
+    
+     const product = await Product.findByIdAndUpdate(id,{
+       photos: imgArray,
+       ...fields,
+     },{
+    new: true,
+    runValidators: true,
+  });
+
+     if (!product) {
+       throw new CustomError("Product was not created", 400);
+       //remove image
+     }
+     res.status(200).json({
+       success: true,
+       product,
+     });
+   } catch (error) {
+     return res.status(500).json({
+       success: false,
+       message: error.message || "Something went wrong",
+     });
+   }
+ });
+});
 
 /**********************************************************
  * @ADMIN_DELETE_PRODUCT
- * @route https://localhost:5000/api/admin/product/:productId
+ * @route https://localhost:5000/api/admin/product/:id
  * @description Admin route to delete a product
  * @description admin can delete a product using product id
  * @returns Succes message Product has been deleted succesfully
@@ -281,9 +374,9 @@ exports.deleteReview = asyncHandler(async (req, res) => {
 
 exports.adminDeleteOneProduct = asyncHandler(async (req, res) => {
  
-  const { productId } = req.params
+  const { id } = req.params;
 
-  const product = await Product.findById(productId);
+  const product = await Product.findById(id);
 
    if (!product) {
      throw new CustomError("No product was found", 401);
