@@ -17,5 +17,4 @@ router.route("/collection/:id")
 .delete(isLoggedIn, customRole(ADMIN), deleteCollection);
 
 
-
 module.exports = router;
