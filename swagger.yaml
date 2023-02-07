@@ -277,13 +277,6 @@ paths:
                         type: string
                       role:
                         type: string
-                      photo:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                          secure_url:
-                            type: string
                       _id:
                         type: string
                       createdAt:
@@ -517,3 +510,77 @@ paths:
           description: Bad request
         500:
           description: internal server error 
+
+  
+  /collections:
+    get:
+      tags:
+        - Collection
+      summary: get all collections available in database and send it as responce
+      requestBody:
+        
+                
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  
+                  collection:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                      
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /collection:
+    post:
+      tags:
+        - Collection
+      summary: Create a new collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  
+                  collection:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                      
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+             
