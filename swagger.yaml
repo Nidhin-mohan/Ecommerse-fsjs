@@ -795,5 +795,108 @@ paths:
         500:
           description: internal server error
         
+  /admin/product:
+    post:
+      tags:
+        - Admin
+      summary: If admin, Add a product
+      parameters:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - price
+                - description
+                - collectionId
+                - stock
+                - brand
+                - photos
+              properties:
+                name:
+                  type: string
+                  required: true
+                price:
+                  type: number
+                  required: true
+                description:
+                  type: string
+                  required: true
+                collectionId:
+                  type: string
+                  required: true 
+                stock:
+                  type: number
+                  required: true
+                brand:
+                  type: string
+                  required: true
+                photos:
+                  in: formData
+                  description: The uploaded photos
+                  type: file
+                  format: binary
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  product:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                      price: 
+                        type: number
+                      description: 
+                        type: string
+                      collectionId: 
+                        type: string
+                      brand: 
+                        type: string
+                      ratings: 
+                        type: number
+                      numberOfReviews: 
+                        type: number
+                      user: 
+                        type: string
+                      photos: 
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            secure_url:
+                              type: string
+                      reviews: 
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            comment:
+                              type: string
+                            user:
+                              type: string
+                            name:
+                              type: string
+                            rating:
+                              type: number
+        400:
+          description: Bad request
+        500:
+          description: internal server error
 
-                        
+  
