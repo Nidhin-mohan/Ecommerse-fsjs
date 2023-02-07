@@ -25,6 +25,8 @@ exports.addProduct = asyncHandler(async (req, res) => {
     keepExtensions: true,
   });
 
+  console.log(req.body.user)
+
   form.parse(req, async function (err, fields, files) {
     try {
       if (err) {
@@ -57,7 +59,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
             filesArray.map(async (element, index) => {
               const data = fs.readFileSync(element.filepath);
 
-              console.log(typeof s3FileUpload);
+            
               const upload = await s3FileUpload({
                 bucketName: config.S3_BUCKET_NAME,
                 key: `products/${productId}/photo_${index + 1}.png`,
@@ -65,7 +67,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
                 contentType: element.mimetype,
               });
 
-              console.log("first line 65");
+             
               return {
                 secure_url: upload.Location,
               };
@@ -74,10 +76,8 @@ exports.addProduct = asyncHandler(async (req, res) => {
 
            imgArray = await imgArrayResp;
       }
-      console.log("files", files, fields);
 
-    
-
+      fields.user = req.user.id;
 
       const product = await Product.create({
         _id: productId,

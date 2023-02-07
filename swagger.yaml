@@ -800,7 +800,6 @@ paths:
       tags:
         - Admin
       summary: If admin, Add a product
-      parameters:
       requestBody:
         content:
           multipart/form-data:
