@@ -22,6 +22,4 @@ router
   .put(isLoggedIn, customRole(ADMIN), adminUpdateProduct)
   .delete(isLoggedIn, customRole(ADMIN), adminDeleteOneProduct);
 
-
-
 module.exports = router;
