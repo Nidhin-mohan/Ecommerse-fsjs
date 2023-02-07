@@ -898,53 +898,7 @@ paths:
 
 
 
-
-  /product/review:
-      get:
-        tags:
-          - Product
-        summary: A simple get request will give you all reviews for given products
-        parameters:
-        - name: productId
-          in: path
-          description: id of the product
-          required: true
-          schema:
-            type: string
-        requestBody:
-          
-        responses:
-          200:
-            description: All good success
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    success:
-                      type: boolean
-                    reviews:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          user:
-                            type: string
-                          name:
-                            type: string
-                          rating: 
-                            type: number
-                          comment: 
-                            type: string
-                          _id: 
-                            type: string
-                          
-          400:
-            description: Bad request
-          500:
-            description: internal server error
-  
-        
+   
   /admin/product:
     post:
       tags:
