@@ -4,36 +4,73 @@ const OrderStatus = require("../utils/orderStatus");
 
 const orderSchema = new mongoose.Schema(
   {
-    products: {
-      type: [
-        {
-          productId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Product",
-            required: true,
-          },
-          count: Number,
-          price: Number,
-        },
-      ],
-      required: true,
-    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    address: {
+    orderItems: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        qty: {
+          type: Number,
+          required: true,
+        },
+        image: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: "Product",
+        },
+      },
+    ],
+
+    shippingAddress: {
+      building: { type: String, requred: true },
+      city: { type: String, required: true },
+      postalCode: { type: String, required: true },
+      state: { type: String },
+      country: { type: String, required: true },
+    },
+    paymentMethod: {
       type: String,
       required: true,
     },
-    phoneNumber: {
-      type: Number,
-      required: true,
+    paymentResult: {
+      id: { type: String },
+      status: { type: String },
+      update_time: { type: String },
+      email_address: { type: String },
     },
-    amount: {
+    taxPrice: {
       type: Number,
       required: true,
+      default: 0.0,
+    },
+    shippingPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    isPaid: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     coupon: String,
     transactionId: String,
@@ -42,7 +79,7 @@ const orderSchema = new mongoose.Schema(
       enum: Object.values(OrderStatus),
       default: "ORDERED",
     },
-    //paymentMode: UPI, creditcard or wallet, COD can be added
+    
   },
   {
     timestamps: true,

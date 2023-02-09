@@ -286,7 +286,6 @@ exports.adminUpdateProduct = asyncHandler(async (req, res) => {
 
  let productId = new Mongoose.Types.ObjectId().toHexString
 
-
  const form = formidable({
    multiples: true,
    keepExtensions: true,
@@ -314,6 +313,16 @@ exports.adminUpdateProduct = asyncHandler(async (req, res) => {
        let filesArray = files.photos;
 
        filesArray = Array.isArray(filesArray) ? filesArray : [filesArray];
+
+       let result = Promise.all(
+        product.photos.map(async(element, index) => {
+         let remove = deleteFile({
+            bucketName: config.S3_BUCKET_NAME,
+            key: product.photos[index].id,
+          });
+        } )
+       )
+
 
        // handling images
        let imgArrayResp = Promise.all(
@@ -385,14 +394,32 @@ exports.adminDeleteOneProduct = asyncHandler(async (req, res) => {
 
   //destroy the existing image
 
-  for (let index = 0; index < product.photos.length; index++) {
-
-    const res = await deleteFile({
-      bucketName: config.S3_BUCKET_NAME,
-      key: product.photos[index].id,
+  try {
+    let result = Promise.all(
+      product.photos.map(async (element, index) => {
+        let remove = deleteFile({
+          bucketName: config.S3_BUCKET_NAME,
+          key: product.photos[index].id,
+        });
+      })
+    );
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong",
     });
-   
   }
+
+  
+
+  // for (let index = 0; index < product.photos.length; index++) {
+
+  //   const res = await deleteFile({
+  //     bucketName: config.S3_BUCKET_NAME,
+  //     key: product.photos[index].id,
+  //   });
+   
+  // }
 
   await product.remove();
 
