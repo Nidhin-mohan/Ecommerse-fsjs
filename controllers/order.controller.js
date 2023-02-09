@@ -108,8 +108,6 @@ exports.adminUpdateOrder = asyncHandler(async (req, res, next) => {
 
   order.status = req.body.status;
 
- 
-
   await order.save();
 
   res.status(200).json({
