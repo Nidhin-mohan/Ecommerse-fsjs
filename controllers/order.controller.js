@@ -1,37 +1,54 @@
 const asyncHandler = require("../services/asyncHandler");
 const CustomError = require("../utils/customError");
 const Order = require("../models/order.schema");
+const Product = require("../models/product.schema");
+
 
 
 /******************************************************
  * @Create_ORDER
  * @route http://localhost:5000/api/order/create
- * @description create order Controller to create new order
- * @parameters products, user, address, phoneNumber, amount
+ * @description User can create order Controller to create new order
+ * @parameters products, user, shippingAddress, phoneNumber, amount,paymentMethod,isPaid
  * @returns  Order Object
  ******************************************************/
 
 
 exports.createOrder = asyncHandler(async (req, res, next) => {
   const {
-    products,
-    address,
-    phoneNumber,
-    amount,
-   
+    orderItems,
+    shippingAddress,
+    paymentMethod,
+    taxPrice,
+    shippingPrice,
+    totalPrice,
   } = req.body;
 
-  if(  !products || !address ||!phoneNumber ||!amount){
-   
-      throw new CustomError("All fields required", 400);
+  if (!orderItems || !shippingAddress || !paymentMethod || !totalPrice) {
+    throw new CustomError("All fields required", 400);
+  }else {
+    console.log(orderItems)
+    orderItems.forEach(async (item) => {
+      console.log("item", item.product)
+    
+      const product = await Product.findById(item.product);
 
-  }
+      if (!product) {
+        throw new CustomError("Product not found", 400);
+       
+      }
+      console.log(product)
+      product.stock -= item.quantity;
+      await product.save()
+    })}
 
   const order = await Order.create({
-    products,
-    address,
-    phoneNumber,
-    amount,
+    orderItems,
+    shippingAddress,
+    paymentMethod,
+    taxPrice,
+    shippingPrice,
+    totalPrice,
     user: req.user._id,
   });
 

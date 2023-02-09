@@ -15,7 +15,7 @@ const orderSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
-        qty: {
+        quantity: {
           type: Number,
           required: true,
         },
@@ -79,7 +79,6 @@ const orderSchema = new mongoose.Schema(
       enum: Object.values(OrderStatus),
       default: "ORDERED",
     },
-    
   },
   {
     timestamps: true,
