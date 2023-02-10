@@ -646,7 +646,6 @@ paths:
           description: internal server error
 
 
-  
   /products:
     get:
       tags:
@@ -720,7 +719,6 @@ paths:
         500:
           description: internal server error
 
-  
   /product/{id}:
     get:
       tags:
@@ -895,7 +893,6 @@ paths:
             description: Bad request
           500:
             description: internal server error
-
 
   /admin/product:
     post:
@@ -1139,5 +1136,94 @@ paths:
         500:
           description: internal server error
         
+
+  /coupon:
+    post:
+      tags:
+        - Coupon
+      summary: Admin can Create a new coupon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+                - discount
+              properties:
+                code:
+                  type: string
+                discount:
+                  type: number
+                        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  
+                  coupon:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      code:
+                        type: string
+                      discount:
+                        type: number
+                      active:
+                        type: boolean
+                      
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /coupon/deactive/{couponId}:
+    put:
+      tags:
+        - Coupon
+      summary: Admin can Deactivate  coupon by couponId
+      parameters:
+        - name: couponId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:                  
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  
+                  coupon:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      code:
+                        type: string
+                      discount:
+                        type: number
+                      active:
+                        type: boolean
+                      
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+
 
   
