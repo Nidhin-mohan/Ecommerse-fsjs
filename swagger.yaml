@@ -1285,6 +1285,132 @@ paths:
         500:
           description: internal server error
 
+  
+  /order/create:
+    post:
+      tags:
+        - Order
+      summary: create a new order with given details
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - shippingAddress
+                - paymentMethod
+                - taxAmount
+                - shippingPrice
+                - taxPrice
+                - orderItems
+              properties:
+                shippingAddress:
+                  type: object
+                  properties:
+                    building:
+                      type: string
+                    city: 
+                      type: string
+                    postalCode: 
+                      type: string
+                    state: 
+                      type: string
+                    country: 
+                      type: string
+                paymentMethod:
+                  type: string
+                taxPrice:
+                  type: number
+                shippingPrice:
+                  type: number
+                totalPrice:
+                  type: number
+                orderItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      quantity:
+                        type: string
+                      image:
+                        type: string
+                      price:
+                        type: number
+                      product:
+                        type: string
+                        description: id of product
+                  
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  order:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      user:
+                        type: string
+                      orderStatus:
+                        type: string
+                      createdAt:
+                        type: string
+                      shippingInfo:
+                        type: object
+                        properties:
+                          address:
+                            type: string
+                          city: 
+                            type: string
+                          postalCode: 
+                            type: string
+                          state: 
+                            type: string
+                          country: 
+                            type: string
+                      paymentInfo:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                      taxAmount:
+                        type: number
+                      shippingAmount:
+                        type: number
+                      totalAmount:
+                        type: number
+                      orderItems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            quantity:
+                              type: string
+                            image:
+                              type: string
+                            price:
+                              type: number
+                            product:
+                              type: string
+                              description: id of product
+                        
+        400:
+          description: Bad request
+        500:
+          description: internal server error     
+
 
 
   
