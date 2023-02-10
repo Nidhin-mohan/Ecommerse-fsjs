@@ -1341,9 +1341,7 @@ paths:
                         type: number
                       product:
                         type: string
-                        description: id of product
-                  
-        
+                        description: id of product      
       responses:
         200:
           description: All good success
@@ -1389,6 +1387,82 @@ paths:
                         type: number
                       totalAmount:
                         type: number
+                      orderItems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            quantity:
+                              type: string
+                            image:
+                              type: string
+                            price:
+                              type: number
+                            product:
+                              type: string
+                              description: id of product
+                        
+        400:
+          description: Bad request
+        500:
+          description: internal server error     
+  
+  /order/razorpay:
+    post:
+      tags:
+        - Order
+      summary: Order with payment option razorpay
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - couponcode
+                - orderItems
+              properties:
+                couponcode:
+                  type: string
+                orderItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: number
+                      quantity:
+                        type: number
+                      image:
+                        type: string
+                      price:
+                        type: number
+                      product:
+                        type: string
+                        description: id of product      
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  order:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      user:
+                        type: string
+                      orderStatus:
+                        type: string
+                      createdAt:
+                        type: string  
                       orderItems:
                         type: array
                         items:
