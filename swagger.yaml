@@ -1224,6 +1224,67 @@ paths:
         500:
           description: internal server error
 
+  /coupons:
+    get:
+      tags:
+        - Coupon
+      summary: Admin can get all coupons                        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  
+                  coupon:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      code:
+                        type: string
+                      discount:
+                        type: number
+                      active:
+                        type: boolean
+                      
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /coupon/{couponId}:
+    delete:
+      tags:
+        - Coupon
+      summary: Admin can delete  coupon by couponId
+      parameters:
+        - name: couponId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:                  
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                      
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
 
 
   

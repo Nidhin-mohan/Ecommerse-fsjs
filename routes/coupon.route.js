@@ -5,7 +5,8 @@ const { createCoupon, deactivateCoupon, deleteCoupon, getAllCoupons } = require(
 const { isLoggedIn, customRole } = require("../middlewares/auth.middleware");
 const { ADMIN } = require("../utils/authRoles");
 
-router.route("/coupon").post(isLoggedIn, customRole(ADMIN), createCoupon )
+router.route("/coupon")
+.post(isLoggedIn, customRole(ADMIN), createCoupon )
 router
   .route("/coupon/deactive/:couponId")
   .put(isLoggedIn, customRole(ADMIN), deactivateCoupon);
@@ -13,7 +14,7 @@ router
   .route("/coupon/:couponId")
   .delete(isLoggedIn, customRole(ADMIN), deleteCoupon);
 router
-  .route("/coupon")
+  .route("/coupons")
   .get(isLoggedIn, customRole(ADMIN), getAllCoupons);
 
 module.exports = router;
