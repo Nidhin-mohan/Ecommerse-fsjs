@@ -1,8 +1,79 @@
-const asyncHandler = require("../services/asyncHandler");
-const CustomError = require("../utils/customError");
-const Order = require("../models/order.schema");
-const Product = require("../models/product.schema");
+const Product = require("../models/product.schema.js");
+const Coupon = require("../models/coupon.schema.js");
+const Order = require("../models/order.schema.js");
+const asyncHandler = require("../services/asyncHandler.js");
+const CustomError = require("../utils/customError.js");
+const razorpay = require("../config/razorpay.config.js");
 
+
+/**********************************************************
+ * @GENEARATE_RAZORPAY_ID
+ * @route https://localhost:5000/api/order/razorpay
+ * @description Controller used for genrating razorpay Id
+ * @description Creates a Razorpay Id which is used for placing order
+ * @returns Order Object with "Razorpay order id generated successfully"
+ *********************************************************/
+exports.generateRazorpayOrderId = asyncHandler(async (req, res) => {
+  //get product and coupon from frontend
+  const { couponcode, orderItems } = req.body;
+  let totalAmount = 0;
+  let totalPrice = 0;
+
+  // verify product price from backend
+  if (!orderItems || orderItems.length === 0) {
+    throw new CustomError("Please pass products", 400);
+  } else {
+    // get total price of all the order items
+    for (let i = 0; i < orderItems.length; i++) {
+      const product = await Product.findById(orderItems[i].product);
+      if (!product) {
+        throw new CustomError("Product not found", 400);
+      }
+      totalPrice += product.price * orderItems[i].quantity;
+    }
+  }
+
+  // coupon check - DB
+  if (couponcode) {
+    const couponExist = await Coupon.findOne({
+      code: couponcode,
+      active: true,
+    });
+    if (couponExist) {
+      const discountPrice = (totalPrice * couponExist.discount) / 100;
+      totalAmount = totalPrice - discountPrice;
+
+      // deactivating coupon after it is claimed
+      couponExist.active = false;
+      await couponExist.save();
+    } else {
+      throw new CustomError("Invalid coupon code", 400);
+    }
+  } else {
+    totalAmount = totalPrice;
+  }
+
+  // finalAmount = totalAmount - discount (if any)
+  const options = {
+    amount: Math.round(totalAmount * 100), // convert the amount to paise
+    currency: "INR",
+    receipt: `receipt_${new Date().getTime()}`,
+  };
+
+  // create Razorpay order
+  const order = await razorpay.orders.create(options);
+
+  // if order creation fails
+  if (!order) {
+    throw new CustomError("Payment failed", 400);
+  }
+
+  // send the order details to the frontend
+  res.status(200).json({
+    success: true,
+    order,
+  });
+});
 
 
 /******************************************************
