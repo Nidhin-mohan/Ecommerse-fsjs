@@ -142,11 +142,8 @@ exports.createOrder = asyncHandler(async (req, res, next) => {
 exports.cancelOrder = asyncHandler(async (req, res, next) => {
 
   const {id} = req.params
-  const {status} = req.body
 
-    if (status !== "CANCELLED") {
-      return next(new CustomError("Please select option to cancel order", 401));
-    }
+  
 
   const order = await Order.findById(id);
 
@@ -156,7 +153,7 @@ exports.cancelOrder = asyncHandler(async (req, res, next) => {
    }
 
    if(order){
-     order.status = status;
+     order.status = "CANCELLED";
 
      await order.save();
 

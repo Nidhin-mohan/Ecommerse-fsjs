@@ -1483,7 +1483,122 @@ paths:
         400:
           description: Bad request
         500:
-          description: internal server error     
+          description: internal server error 
+
+  
+  /order/{id}:
+    get:
+      tags:
+        - Order
+      summary: get details about a order with order id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id of the order
+          schema:
+            type: string
+      
+      requestBody:
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  order:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      user:
+                        type: string
+                      orderStatus:
+                        type: string
+                      createdAt:
+                        type: string  
+                      orderItems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            quantity:
+                              type: string
+                            image:
+                              type: string
+                            price:
+                              type: number
+                            product:
+                              type: string
+                              description: id of product
+                        
+        400:
+          description: Bad request
+        500:
+          description: internal server error   
+    put:
+      tags:
+        - Order
+      summary: User can cansel order with order id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id of the order
+          schema:
+            type: string
+      
+      requestBody:
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  order:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      user:
+                        type: string
+                      orderStatus:
+                        type: string
+                      createdAt:
+                        type: string  
+                      orderItems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            quantity:
+                              type: string
+                            image:
+                              type: string
+                            price:
+                              type: number
+                            product:
+                              type: string
+                              description: id of product
+                        
+        400:
+          description: Bad request
+        500:
+          description: internal server error   
+      
+    
 
 
 
