@@ -267,8 +267,6 @@ exports.deleteReview = asyncHandler(async (req, res) => {
   });
 });
 
-
-
 /**********************************************************
  * @UPDATE_PRODUCT
  * @route https://localhost:5000/api/admin/product/:id
@@ -282,9 +280,11 @@ exports.deleteReview = asyncHandler(async (req, res) => {
 exports.adminUpdateProduct = asyncHandler(async (req, res) => {
  const {id} = req.params;
   
- const product = await Product.findById(id)
+ const product = await Product.findById(id);
 
- let productId = new Mongoose.Types.ObjectId().toHexString
+ if (!product) {
+   throw new CustomError("No product was found", 401);
+ }
 
  const form = formidable({
    multiples: true,
@@ -297,7 +297,8 @@ exports.adminUpdateProduct = asyncHandler(async (req, res) => {
        throw new CustomError(err.message || "Something went wrong", 500);
      }
 
-     let productId = new Mongoose.Types.ObjectId().toHexString();
+     let productId = product.id
+     console.log(productId)
      let imgArray;
      // check for fields
      if (
@@ -314,30 +315,35 @@ exports.adminUpdateProduct = asyncHandler(async (req, res) => {
 
        filesArray = Array.isArray(filesArray) ? filesArray : [filesArray];
 
-       let result = Promise.all(
-        product.photos.map(async(element, index) => {
-         let remove = deleteFile({
-           bucketName: config.S3_BUCKET_NAME,
-           key: `products/${productId}/photo_${index + 1}.png`,
-         });
-        } )
-       )
+     try {
+       await Promise.all(
+         product.photos.map(async (index) => {
+        
+           await deleteFile({
+             bucketName: config.S3_BUCKET_NAME,
+             key: `products/${product.id}/photo_${index + 1}.png`,
+           });
+         })
+       );
+     } catch (error) {
+       return res.status(500).json({
+         success: false,
+         message: error.message || "Something went wrong",
+       });
+     }
 
 
        // handling images
        let imgArrayResp = Promise.all(
          filesArray.map(async (element, index) => {
            const data = fs.readFileSync(element.filepath);
-
-           console.log(typeof s3FileUpload);
            const upload = await s3FileUpload({
              bucketName: config.S3_BUCKET_NAME,
-             key: `products/${productId}/photo_${index + 1}.png`,
+             key: `products/${product.id}/photo_${index + 1}.png`,
              body: data,
              contentType: element.mimetype,
            });
 
-           console.log("first line 65");
            return {
              secure_url: upload.Location,
            };
@@ -347,7 +353,7 @@ exports.adminUpdateProduct = asyncHandler(async (req, res) => {
        imgArray = await imgArrayResp;
      }
     
-     const product = await Product.findByIdAndUpdate(id,{
+     const updatedproduct = await Product.findByIdAndUpdate(id,{
        photos: imgArray,
        ...fields,
      },{
@@ -355,13 +361,13 @@ exports.adminUpdateProduct = asyncHandler(async (req, res) => {
     runValidators: true,
   });
 
-     if (!product) {
-       throw new CustomError("Product was not created", 400);
+     if (!updatedproduct) {
+       throw new CustomError("Failed to update product", 400);
        //remove image
      }
      res.status(200).json({
        success: true,
-       product,
+       updatedproduct,
      });
    } catch (error) {
      return res.status(500).json({
