@@ -932,10 +932,14 @@ paths:
                   type: string
                   required: true
                 photos:
-                  in: formData
-                  description: The uploaded photos
-                  type: file
-                  format: binary
+                  type: array
+                  items:
+                    in: formData
+                    description: The uploaded photos
+                    type: file
+                    format: binary
+
+                  
         
       responses:
         200:
