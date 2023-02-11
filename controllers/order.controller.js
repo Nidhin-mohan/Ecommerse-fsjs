@@ -258,6 +258,11 @@ exports.adminUpdateOrder = asyncHandler(async (req, res, next) => {
 exports.adminDeleteOrder = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
 
+  if(!order){
+    return next(new CustomError("Order does not exist", 401));
+
+  }
+
   await order.remove();
 
   res.status(200).json({

@@ -317,9 +317,9 @@ exports.adminUpdateProduct = asyncHandler(async (req, res) => {
        let result = Promise.all(
         product.photos.map(async(element, index) => {
          let remove = deleteFile({
-            bucketName: config.S3_BUCKET_NAME,
-            key: product.photos[index].id,
-          });
+           bucketName: config.S3_BUCKET_NAME,
+           key: `products/${productId}/photo_${index + 1}.png`,
+         });
         } )
        )
 
@@ -390,36 +390,23 @@ exports.adminDeleteOneProduct = asyncHandler(async (req, res) => {
    if (!product) {
      throw new CustomError("No product was found", 401);
    }
-
-
   //destroy the existing image
 
-  try {
-    let result = Promise.all(
-      product.photos.map(async (element, index) => {
-        let remove = deleteFile({
-          bucketName: config.S3_BUCKET_NAME,
-          key: product.photos[index].id,
-        });
-      })
-    );
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message || "Something went wrong",
-    });
-  }
-
-  
-
-  // for (let index = 0; index < product.photos.length; index++) {
-
-  //   const res = await deleteFile({
-  //     bucketName: config.S3_BUCKET_NAME,
-  //     key: product.photos[index].id,
-  //   });
-   
-  // }
+   try {
+     await Promise.all(
+       product.photos.map(async (index) => {
+         await deleteFile({
+           bucketName: config.S3_BUCKET_NAME,
+           key: `products/${product.id}/photo_${index + 1}.png`,
+         });      
+       })
+     );
+   } catch (error) {
+     return res.status(500).json({
+       success: false,
+       message: error.message || "Something went wrong",
+     });
+   }
 
   await product.remove();
 

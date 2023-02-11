@@ -1596,7 +1596,207 @@ paths:
         400:
           description: Bad request
         500:
-          description: internal server error   
+          description: internal server error  
+
+  
+  /myorder:
+    get:
+      tags:
+        - Order
+      summary: get order of logged in user
+      requestBody:
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  order:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      user:
+                        type: string
+                      orderStatus:
+                        type: string
+                      createdAt:
+                        type: string  
+                      orderItems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            quantity:
+                              type: string
+                            image:
+                              type: string
+                            price:
+                              type: number
+                            product:
+                              type: string
+                              description: id of product
+                        
+        400:
+          description: Bad request
+        500:
+          description: internal server error  
+
+   
+  /admin/orders:
+    get:
+      tags:
+        - Admin
+      summary: if admin, get list of all orders
+      requestBody:
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  order:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      user:
+                        type: string
+                      orderStatus:
+                        type: string
+                      createdAt:
+                        type: string  
+                      orderItems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            quantity:
+                              type: string
+                            image:
+                              type: string
+                            price:
+                              type: number
+                            product:
+                              type: string
+                              description: id of product
+                        
+        400:
+          description: Bad request
+        500:
+          description: internal server error 
+
+  /admin/order/{id}:
+    put:
+      tags:
+        - Admin
+      summary: if admin, update the status of the order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id of the order
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - orderStatus
+              properties:
+                orderStatus:
+                  type: string
+                  enum: [Processing, Delivered]
+                  required: true
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  order:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      user:
+                        type: string
+                      orderStatus:
+                        type: string
+                      createdAt:
+                        type: string  
+                      orderItems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            quantity:
+                              type: string
+                            image:
+                              type: string
+                            price:
+                              type: number
+                            product:
+                              type: string
+                              description: id of product
+                        
+        400:
+          description: Bad request
+        500:
+          description: internal server error 
+    delete:
+      tags:
+        - Admin
+      summary: if admin, delete an order with given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id of the order
+          schema:
+            type: string
+      requestBody:
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+       
+        
+
       
     
 
