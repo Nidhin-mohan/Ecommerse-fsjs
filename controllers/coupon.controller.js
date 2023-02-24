@@ -18,7 +18,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
   if (!code || !discount) {
     throw new CustomError(" Coupon code, discount is required", 400);
   }
-
+  //finding coupon using code from database
   const couponExist = await Coupon.findOne({code});
 
   console.log(couponExist)
@@ -121,6 +121,7 @@ exports.getAllCoupons = asyncHandler(async (req, res) => {
     throw new CustomError("No coupon found", 400);
   }
 
+  //send this response value to frontend
   res.status(200).json({
     success: true,
     coupons,

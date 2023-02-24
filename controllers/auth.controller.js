@@ -26,11 +26,14 @@ exports.signUp = asyncHandler(async (req, res) => {
     throw new CustomError("User already exists", 400);
   }
 
+  //creating a new user
   const user = await User.create({
     name,
     email,
     password,
   });
+
+  //generating token for cookie
   const token = user.getJwtToken();
 
   user.password = undefined;
@@ -59,13 +62,13 @@ exports.login = asyncHandler(async (req, res) => {
   if (!email || !password) {
     throw new CustomError("Please fill all fields", 400);
   }
-
+  // finding user from database uisng email
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
     throw new CustomError("Invalid credentials", 400);
   }
-
+  // comparing password
   const isPasswordMatched = await user.comparePassword(password);
 
   if (isPasswordMatched) {
@@ -91,7 +94,7 @@ exports.login = asyncHandler(async (req, res) => {
  * @returns success message
  ******************************************************/
 exports.logout = asyncHandler(async (_req, res) => {
-  // res.clearCookie()  or
+  // res.clearCookie()  or setting cookie as null
   res.cookie("token", null, {
     expires: new Date(Date.now()),
     httpOnly: true,
@@ -114,10 +117,15 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
   //check email for null or ""
 
+  if (!email ) {
+    throw new CustomError("Please fill email", 400);
+  }
+  //finding user with email
   const user = await User.findOne({ email });
   if (!user) {
     throw new CustomError("User not found", 404);
   }
+
   const resetToken = user.genereteForgotPasswordToken();
 
   await user.save({ validateBeforeSave: false });
@@ -129,7 +137,7 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
   const text = `Your password reset url is
     \n\n ${resetUrl}\n\n
     `;
-
+    // sending mail to user email for resetting password
   try {
     await mailHelper({
       email: user.email,

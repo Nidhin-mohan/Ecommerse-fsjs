@@ -20,19 +20,18 @@ const { findById } = require("../models/product.schema");
 
 
 exports.addProduct = asyncHandler(async (req, res) => {
+  // Set up `formidable` with options to handle file uploads
   const form = formidable({
     multiples: true,
     keepExtensions: true,
   });
-
-  console.log(req.body.user)
 
   form.parse(req, async function (err, fields, files) {
     try {
       if (err) {
         throw new CustomError(err.message || "Something went wrong", 500);
       }
- 
+
       let productId = new Mongoose.Types.ObjectId().toHexString();
       let imgArray;
       // check for fields
@@ -48,37 +47,35 @@ exports.addProduct = asyncHandler(async (req, res) => {
       if (!files.photos) {
         throw new CustomError("Please fill photos", 401);
         //remove image
-      }
-      else {
-          let filesArray = files.photos;
+      } else {
+        let filesArray = files.photos;
 
-          filesArray = Array.isArray(filesArray) ? filesArray : [filesArray];
+        filesArray = Array.isArray(filesArray) ? filesArray : [filesArray];
 
-          // handling images
-          let imgArrayResp = Promise.all(
-            filesArray.map(async (element, index) => {
-              const data = fs.readFileSync(element.filepath);
+        // handling images
+        let imgArrayResp = Promise.all(
+          filesArray.map(async (element, index) => {
+            const data = fs.readFileSync(element.filepath);
 
-            
-              const upload = await s3FileUpload({
-                bucketName: config.S3_BUCKET_NAME,
-                key: `products/${productId}/photo_${index + 1}.png`,
-                body: data,
-                contentType: element.mimetype,
-              });
+            const upload = await s3FileUpload({
+              bucketName: config.S3_BUCKET_NAME,
+              key: `products/${productId}/photo_${index + 1}.png`,
+              body: data,
+              contentType: element.mimetype,
+            });
 
-             
-              return {
-                secure_url: upload.Location,
-              };
-            })
-          );
+            return {
+              secure_url: upload.Location,
+            };
+          })
+        );
 
-           imgArray = await imgArrayResp;
+        imgArray = await imgArrayResp;
       }
 
       fields.user = req.user.id;
 
+      // adding product to database
       const product = await Product.create({
         _id: productId,
         photos: imgArray,
@@ -89,10 +86,12 @@ exports.addProduct = asyncHandler(async (req, res) => {
         throw new CustomError("Product was not created", 400);
         //remove image
       }
+
       res.status(200).json({
         success: true,
         product,
       });
+
     } catch (error) {
       return res.status(500).json({
         success: false,
@@ -111,6 +110,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
  *********************************************************/
 
 exports.getAllProducts = asyncHandler(async (req, res) => {
+  // getting all products from database
   const products = await Product.find({});
 
   if (!products) {
@@ -135,12 +135,14 @@ exports.getAllProducts = asyncHandler(async (req, res) => {
 exports.getProductById = asyncHandler(async (req, res) => {
   const { id: productId } = req.params;
 
+  //finding a product by its id from database
   const product = await Product.findById(productId);
 
   
   if (!product) {
     throw new CustomError("No product was found", 401);
   }
+
   res.status(200).json({
     success: true,
     product,
@@ -183,6 +185,7 @@ exports.addReview = asyncHandler(async (req, res) => {
     (rev) => rev.user.toString() === req.user._id.toString()
   );
 
+  //if review exist update it other wise create 
   if (AlreadyReview) {
     product.reviews.forEach((review) => {
       if (review.user.toString() === req.user._id.toString()) {
@@ -225,13 +228,13 @@ exports.deleteReview = asyncHandler(async (req, res) => {
  
    const { productId } = req.params;
 
-  
+  // finding product by productId form database  
   const product = await Product.findById(productId);
 
    if (!product) {
      throw new CustomError("No product was found", 401);
    }
-
+  // filtering the review using user id
   const reviews = product.reviews.filter(
     (rev) => rev.user.toString() !== req.user._id.toString()
   );  
