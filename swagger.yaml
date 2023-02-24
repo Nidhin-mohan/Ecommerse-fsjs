@@ -16,14 +16,15 @@ servers:
         default: v1
       url:
         enum:
-          - localhost:4000
           - ecommerse-fsjs-production.up.railway.app
-        default: localhost:4000
+          - localhost:4000
+         
+        default: ecommerse-fsjs-production.up.railway.app
       protocol:
         enum:
           - http
           - https
-        default: http
+        default: https
 
 components:
   securitySchemes:

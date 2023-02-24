@@ -31,7 +31,7 @@ const userSchema = mongoose.Schema(
     forgotPasswordExpiry: Date,
   },
   {
-    timestamps: true,
+    timestamps: true, 
   }
 );
 
@@ -65,6 +65,7 @@ userSchema.methods = {
         expiresIn: config.JWT_EXPIRY,
       }
     );
+    
   },
 
   genereteForgotPasswordToken: function () {
