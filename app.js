@@ -31,7 +31,9 @@ const order = require("./routes/order.route");
 
 //  home route
 app.get('/', (req, res) => {
-  res.send('Welcome to my home page!');
+  res.send(
+    `Welcome to my home page! Please check out our <a href="https://ecommerse-fsjs-production.up.railway.app/api-docs/#/">API documentation</a> for more information.`
+  );
 });
 
 
