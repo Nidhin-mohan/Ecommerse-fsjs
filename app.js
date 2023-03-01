@@ -28,11 +28,26 @@ const product = require("./routes/product.route");
 const coupon = require("./routes/coupon.route");
 const order = require("./routes/order.route");
 
+
+//  home route
+app.get('/', (req, res) => {
+  res.send('Welcome to my home page!');
+});
+
+
 //router middleware
 app.use("/api/v1/auth", user);
 app.use("/api/v1", collection);
 app.use("/api/v1", product);
 app.use("/api/v1", coupon);
 app.use("/api/v1", order);
+
+
+//  "not found" route
+app.use((req, res, next) => {
+  res.status(404).send('Sorry, the page you requested could not be found.');
+});
+
+
 
 module.exports=  app;
