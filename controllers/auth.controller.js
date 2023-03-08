@@ -42,9 +42,9 @@ exports.signUp = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
+    message: "Succesfully Registered ",
     token,
-    user,
-     
+    user,   
   });
 });
 
@@ -77,9 +77,9 @@ exports.login = asyncHandler(async (req, res) => {
     res.cookie("token", token, cookieOptions);
     return res.status(200).json({
       success: true,
+      message: "Succesfully LogedIn ",
       token,
       user,
-    
     });
   }
 
@@ -101,7 +101,7 @@ exports.logout = asyncHandler(async (_req, res) => {
   });
   res.status(200).json({
     success: true,
-    message: "Logged Out",
+    message: "Succesfully Logged Out",
   });
 });
 
@@ -210,6 +210,7 @@ exports.resetPassword = asyncHandler(async (req, res) => {
   res.cookie("token", token, cookieOptions);
   res.status(200).json({
     success: true,
+    message: "Reset password succesful ",
     user,
   });
 });
@@ -282,6 +283,7 @@ exports.changePassword = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
+    message: " password  changed succesful ",
     user,
   });
 });
