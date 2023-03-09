@@ -89,6 +89,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
 
       res.status(200).json({
         success: true,
+        message: "product created",
         product,
       });
 
@@ -370,6 +371,7 @@ exports.adminUpdateProduct = asyncHandler(async (req, res) => {
      }
      res.status(200).json({
        success: true,
+       message: "product updated",
        updatedproduct,
      });
    } catch (error) {
