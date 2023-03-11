@@ -271,6 +271,40 @@ exports.deleteReview = asyncHandler(async (req, res) => {
   });
 });
 
+
+
+/**********************************************************
+ * @productFilters
+ * @route https://localhost:5000/api/product/review/:productId
+ * @description Controller used for filter products
+ * @description User  can filter products
+ * @returns Products Object
+ *********************************************************/
+
+exports.productFilters = asyncHandler(async (req, res) => {
+   
+  const { checked, radio } = req.query;
+  const radioArray = radio.split(",").map(Number);
+ 
+  let args = {};
+  if (checked?.length > 0) args.collectionId = checked;
+if (radioArray?.length === 2)
+  args.price = { $gte: radioArray[0], $lte: radioArray[1] };  const products = await Product.find(args);
+  res.status(200).json({
+    success: true,
+    products,
+  });
+});
+
+
+
+
+
+
+
+
+
+
 /**********************************************************
  * @UPDATE_PRODUCT
  * @route https://localhost:5000/api/admin/product/:id
@@ -279,7 +313,6 @@ exports.deleteReview = asyncHandler(async (req, res) => {
  * @description Uses AWS S3 Bucket for image upload
  * @returns Product Object
  *********************************************************/
-
 
 exports.adminUpdateProduct = asyncHandler(async (req, res) => {
  const {id} = req.params;
