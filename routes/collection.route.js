@@ -7,10 +7,10 @@ const { ADMIN } = require("../utils/authRoles");
 
 
 //user routes
-router.route("/collections").get(isLoggedIn, customRole(ADMIN) ,getAllCollections);
+router.route("/collections").get(getAllCollections);
 
 
-//admin routes
+//admin routesx
 router.route("/collection").post(isLoggedIn, customRole(ADMIN), createCollection);
 router.route("/collection/:id")
 .put(isLoggedIn, customRole(ADMIN), updateCollection)
