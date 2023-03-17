@@ -54,11 +54,12 @@ exports.generateRazorpayOrderId = asyncHandler(async (req, res) => {
   }
 
   // finalAmount = totalAmount - discount (if any)
-  const options = {
-    amount: Math.round(totalAmount * 100), // convert the amount to paise
-    currency: "INR",
-    receipt: `receipt_${new Date().getTime()}`,
-  };
+ const options = {
+   amount: parseInt(totalAmount * 100), // convert the amount to paise and then to integer
+   currency: "INR",
+   receipt: `receipt_${new Date().getTime()}`,
+ };
+
 
   // create Razorpay order
   const order = await razorpay.orders.create(options);
