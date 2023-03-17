@@ -25,7 +25,7 @@ exports.generateRazorpayOrderId = asyncHandler(async (req, res) => {
   } else {
     // get total price of all the order items
     for (let i = 0; i < orderItems.length; i++) {
-      const product = await Product.findById(orderItems[i].product);
+      const product = await Product.findById(orderItems[i]._id);
       if (!product) {
         throw new CustomError("Product not found", 400);
       }
