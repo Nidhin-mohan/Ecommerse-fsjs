@@ -61,8 +61,8 @@ exports.generateRazorpayOrderId = asyncHandler(async (req, res) => {
  };
 
 
-  // create Razorpay order
-  const order = await razorpay.orders.create(options);
+  // commented to deploy on raiway
+  // const order = await razorpay.orders.create(options);
 
   // if order creation fails
   if (!order) {
